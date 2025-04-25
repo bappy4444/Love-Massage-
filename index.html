@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>For You ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        
+        .message-box {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff2d75;
+            margin-bottom: 10px;
+        }
+        
+        .initial-message {
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-style: italic;
+            transition: opacity 0.5s;
+        }
+        
+        .display-message {
+            color: #333;
+            font-size: 18px;
+            line-height: 1.6;
+            min-height: 80px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .credit {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 6s linear forwards;
+            opacity: 0.8;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="message-box">
+        <div class="header">Hey You ❤️</div>
+        <div class="initial-message" id="initialMessage">I have something special for you...</div>
+        <div class="display-message" id="displayMessage"></div>
+        <div class="credit">- Shuvo</div>
+    </div>
+
+    <script>
+        // 50+ বাংলা এবং ইংরেজি মেসেজ (পৃথকভাবে)
+        const messages = [
+            // বাংলা মেসেজ (২৫টি)
+            "তুমি আমার হৃদয়ের রানী, আমার সবচেয়ে প্রিয় মানুষ...",
+            "তোমার ভালোবাসায় আমার জীবন সার্থক হয়েছে...",
+            "তোমার হাসি দেখলে আমার সব কষ্ট ভুলে যাই...",
+            "তুমি আমার জীবনের সবচেয়ে সুন্দর উপহার...",
+            "প্রতিদিন তোমাকে ভালোবাসতে চাই...",
+            "তোমার চোখে আমি আমার ভবিষ্যৎ দেখতে পাই...",
+            "তুমি আমার প্রথম প্রেম, শেষ প্রেম, একমাত্র প্রেম...",
+            "তোমাকে ভালোবাসি বলে চিৎকার করতে চাই...",
+            "তুমি আমার অন্ধকারে আলোর মতো...",
+            "তোমার স্পর্শে আমার হৃদয় গলে যায়...",
+            "তুমি ছাড়া আমার জীবন অসম্পূর্ণ...",
+            "তোমার জন্য আমার হৃদয় সবসময় উন্মুখ...",
+            "তোমাকে দেখলেই আমার মন প্রজাপতির মতো ডানা মেলে...",
+            "তুমি আমার জীবনের সবচেয়ে সুন্দর ঘটনা...",
+            "তোমার কথা ভাবলেই আমার মুখে হাসি ফুটে ওঠে...",
+            "তোমার ভালোবাসা আমার শক্তির উৎস...",
+            "তুমি আমার অক্সিজেন, তোমাকে ছাড়া বাঁচতে পারবো না...",
+            "তোমাকে ভালোবাসতে ভালোবাসতে একদিন মরে যাবো...",
+            "তুমি আমার জীবনের অর্থ...",
+            "তোমার ভালোবাসায় আমি স্বর্গের স্বাদ পাই...",
+            "তুমি আমার হৃদয়ের গভীরে বাস করো...",
+            "তোমার জন্য আমার হৃদয় কাঁপে...",
+            "তুমি আমার সবচেয়ে বড় পাওয়া...",
+            "তোমার ভালোবাসা আমার হৃদয় জুড়ে রাজত্ব করে...",
+            "তুমি আমার স্বপ্নের রানী...",
+
+            // ইংরেজি মেসেজ (২৫টি)
+            "You are the queen of my heart, my most beloved person...",
+            "My life is fulfilled with your love...",
+            "All my pains fade away when I see your smile...",
+            "You are the most beautiful gift of my life...",
+            "I want to love you every day...",
+            "I see my future in your eyes...",
+            "You are my first love, last love, only love...",
+            "I want to scream how much I love you...",
+            "You are like light in my darkness...",
+            "My heart melts with your touch...",
+            "My life is incomplete without you...",
+            "My heart always longs for you...",
+            "My heart flutters like butterflies when I see you...",
+            "You are the most beautiful incident of my life...",
+            "Just thinking about you brings smile on my face...",
+            "Your love is the source of my strength...",
+            "You are my oxygen, I can't live without you...",
+            "I'll die loving you endlessly...",
+            "You are the meaning of my life...",
+            "I taste heaven in your love...",
+            "You live deep in my heart...",
+            "My heart trembles for you...",
+            "You are my greatest achievement...",
+            "Your love rules over my heart...",
+            "You are the queen of my dreams..."
+        ];
+
+        const initialMessage = document.getElementById('initialMessage');
+        const displayMessage = document.getElementById('displayMessage');
+        
+        // হার্ট তৈরি ফাংশন
+        function createHearts(count) {
+            const colors = ['#ff0000', '#ff69b4', '#ff1493', '#ff00ff', '#ff0066'];
+            const heartsContainer = document.getElementById('hearts');
+            
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '❤️';
+                    heart.className = 'heart';
+                    heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.fontSize = (Math.random() * 25 + 15) + 'px';
+                    heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                    
+                    heartsContainer.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 6000);
+                }, i * 200);
+            }
+        }
+        
+        // মেসেজ দেখানো
+        function showMessages() {
+            initialMessage.style.opacity = '0';
+            setTimeout(() => {
+                initialMessage.style.display = 'none';
+                displayMessage.style.display = 'block';
+                
+                let index = 0;
+                // প্রতি ৩ সেকেন্ড পর পর মেসেজ চেঞ্জ হবে
+                setInterval(() => {
+                    displayMessage.textContent = messages[index];
+                    createHearts(5);
+                    index = (index + 1) % messages.length;
+                }, 3000);
+            }, 500);
+        }
+        
+        // শুরুতে ৩ সেকেন্ড শুধু ইংরেজি মেসেজ দেখাবে
+        setTimeout(() => {
+            showMessages();
+        }, 3000);
+        
+        // শুরুতে কিছু হার্ট তৈরি
+        createHearts(3);
+    </script>
+</body>
+</html>
